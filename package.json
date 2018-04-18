@@ -4,7 +4,9 @@
     "description": "OSRS API for Advanced Software Engineering",
     "main": "server.js",
     "scripts": {
-        "test": "test"
+        "test": "test",
+        "dev": "nodemon server.js",
+        "start": "node server.js"
     },
     "author": "Noah Phillips",
     "license": "ISC",
