@@ -4,6 +4,9 @@ const express = require('express'),
     bodyParser = require('body-parser'),
     ejwt = require('express-jwt'),
     cors = require('cors'),
+    fs = require('fs'),
+    router = express.Router(),
+    path = require('path'),
     port = process.env.PORT || 3000
 
 app.use(cors({
@@ -24,26 +27,34 @@ app.use(bodyParser.json({
     type: 'application/*'
 }))
 
-app.use(ejwt({
-    secret: process.env.TOKEN_SECRET || 'devSecret'
-}).unless({
-    path: [{
-        url: '/auth/signup',
-        methods: ['POST']
-    }, 
-    {
-        url: '/auth/login',
-        methods: ['POST']
-    }, 
-    {
-        url: '/auth/forgot_password',
-        methods: ['POST']
-    }, 
-    {
-        url: /auth\/reset_password\/.*$/,
-        methods: ['POST']
-    }]
-}))
+// app.use(ejwt({
+//     secret: process.env.TOKEN_SECRET || 'devSecret'
+// }).unless({
+//     path: [{
+//         url: '/auth/signup',
+//         methods: ['POST']
+//     }, 
+//     {
+//         url: '/auth/login',
+//         methods: ['POST']
+//     }, 
+//     {
+//         url: '/auth/forgot_password',
+//         methods: ['POST']
+//     }, 
+//     {
+//         url: /auth\/reset_password\/.*$/,
+//         methods: ['POST']
+//     }]
+// }))
+
+fs.readdirSync('./app/routes').forEach((file) => {
+    router.use(`/${path.parse(file).name}`, require(`./app/routes/${file}`)(
+        express.Router()
+    ))
+})
+
+app.use(router)
 
 app.listen(port, () => {
     console.log(`Server active at http://localhost:${port}`)
