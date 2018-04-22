@@ -1,9 +1,10 @@
 'use strict'
-var BuildingDB = require('../models').building,
+var SessionDB = require('../models').session,
 SingleModel = require('./SingleModel'),
-    _ = require('underscore')
+    _ = require('underscore'),
+    jwt = require('jsonwebtoken')
 
-module.exports = class Building extends SingleModel {
+module.exports = class UserSession extends SingleModel {
 
     constructor(modelObject, id = null) {
         super()
@@ -11,8 +12,13 @@ module.exports = class Building extends SingleModel {
 
     create(modelObject = {}) {
         return new Promise( async (res, rej) => {
-            var result = await super.createModel(this, BuildingDB, modelObject)
-            return res(this.getAttributes(BuildingDB.getAttributes()))
+            var result = await super.createModel(this, SessionDB, modelObject)
+            var token = jwt.sign({
+                id: modelObject.user_id,
+                session_id: this._id
+            }, process.env.TOKEN_SECRET || 'devSecret')
+            await super.updateModel(this, SessionDB, {token})
+            return res(this.getAttributes(SessionDB.getAttributes()))
         })
     }
 
@@ -21,8 +27,8 @@ module.exports = class Building extends SingleModel {
             if (filter === null ) {
                 return res(false)
             }
-            await super.getFromDB(this, BuildingDB, filter)
-            return res(this.getAttributes(BuildingDB.getAttributes()))
+            await super.getFromDB(this, SessionDB, filter)
+            return res(this.getAttributes(SessionDB.getAttributes()))
         })
     }
 
@@ -33,7 +39,7 @@ module.exports = class Building extends SingleModel {
     getAttributes(arrayOfAtts = null) {
         var values = {}
         if (arrayOfAtts === null) {
-            arrayOfAtts = BuildingDB.getAttributes()
+            arrayOfAtts = SessionDB.getAttributes()
         }
         arrayOfAtts.forEach(attribute => {
             values[attribute] = this[`_${attribute}`]
@@ -46,13 +52,13 @@ module.exports = class Building extends SingleModel {
             if (this._id === null) {
                 return res(false)
             }
-            return res( await super.destroyModel(this, BuildingDB, this._id))
+            return res( await super.destroyModel(this, SessionDB, this._id))
         })
     }
 
     update(newValsObj = null) {
         return new Promise( async (res, rej) => {
-            return res( await super.updateModel(this, BuildingDB, newValsObj))
+            return res( await super.updateModel(this, SessionDB, newValsObj))
         })
     }
     

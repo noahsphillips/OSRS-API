@@ -1,4 +1,4 @@
-let Building = require('../classes/Building'),
+let Grade = require('../classes/Grade'),
     Models = require('../classes/Models'),
     _ = require('underscore')
 
@@ -6,93 +6,93 @@ module.exports = (router) => {
 
     router.get('/', async (req, res) => {
 
-        var buildings = new Models('building')
+        var grades = new Models('grade')
         try {
-            buildings = await buildings.getAll()
+            grades = await grades.getAll()
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
 
-        if (!buildings) {
+        if (!grades) {
             return res.status(404).json({})
         }
 
-        return res.json(buildings)
+        return res.json(grades)
 
     })
 
     router.post('/', async (req, res) => {
 
-        var building = new Building()
+        var grade = new Grade()
 
-        building = await building.create(req.body)
+        grade = await grade.create(req.body)
 
-        return res.json(building)
+        return res.json(grade)
 
     })
 
     router.get('/:id([0-9]+)', async (req, res) => {
 
-        var buildings = new Models('building')
+        var grades = new Models('grade')
 
         try {
-            buildings = await buildings.getOne({id: req.params.id})
+            grades = await grades.getOne({id: req.params.id})
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
 
-        if (!buildings) {
+        if (!grades) {
             return res.status(404).json({})
         }
 
-        return res.json(buildings)
+        return res.json(grades)
 
     })
 
     router.patch('/:id([0-9]+)', async (req, res) => {
 
-        var building = new Building()
+        var grade = new Grade()
 
         try {
-            await building.fetch({id:req.params.id})
+            await grade.fetch({id:req.params.id})
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
 
-        if (building.getAttributes()['id'] === null) {
-            return res.status(404).json({message: "Building not found"})
+        if (grade.getAttributes()['id'] === null) {
+            return res.status(404).json({message: "Grade not found"})
         }
 
         try {
-            await building.update(req.body)
+            await grade.update(req.body)
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
-        return res.json(building.getAttributes())
+        return res.json(grade.getAttributes())
 
     })
 
     router.delete('/:id([0-9]+)', async (req, res) => {
 
-        var building = new Building()
+        var grade = new Grade()
 
         try {
-            await building.fetch({id:req.params.id})
+            await grade.fetch({id:req.params.id})
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
 
-        if (building.getAttributes().id === undefined) {
+        if (grade.getAttributes().id === undefined) {
             return res.status(404).json({})
         }
 
         try {
-            await building.delete()
+            await grade.delete()
         } catch (error) {
             console.log(error)
             res.status(500).send(error)

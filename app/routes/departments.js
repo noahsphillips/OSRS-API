@@ -1,4 +1,4 @@
-let Building = require('../classes/Building'),
+let Department = require('../classes/Department'),
     Models = require('../classes/Models'),
     _ = require('underscore')
 
@@ -6,93 +6,93 @@ module.exports = (router) => {
 
     router.get('/', async (req, res) => {
 
-        var buildings = new Models('building')
+        var departments = new Models('department')
         try {
-            buildings = await buildings.getAll()
+            departments = await departments.getAll()
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
 
-        if (!buildings) {
+        if (!departments) {
             return res.status(404).json({})
         }
 
-        return res.json(buildings)
+        return res.json(departments)
 
     })
 
     router.post('/', async (req, res) => {
 
-        var building = new Building()
+        var department = new Department()
 
-        building = await building.create(req.body)
+        department = await department.create(req.body)
 
-        return res.json(building)
+        return res.json(department)
 
     })
 
     router.get('/:id([0-9]+)', async (req, res) => {
 
-        var buildings = new Models('building')
+        var departments = new Models('department')
 
         try {
-            buildings = await buildings.getOne({id: req.params.id})
+            departments = await departments.getOne({id: req.params.id})
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
 
-        if (!buildings) {
+        if (!departments) {
             return res.status(404).json({})
         }
 
-        return res.json(buildings)
+        return res.json(departments)
 
     })
 
     router.patch('/:id([0-9]+)', async (req, res) => {
 
-        var building = new Building()
+        var department = new Department()
 
         try {
-            await building.fetch({id:req.params.id})
+            await department.fetch({id:req.params.id})
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
 
-        if (building.getAttributes()['id'] === null) {
-            return res.status(404).json({message: "Building not found"})
+        if (department.getAttributes()['id'] === null) {
+            return res.status(404).json({message: "Department not found"})
         }
 
         try {
-            await building.update(req.body)
+            await department.update(req.body)
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
-        return res.json(building.getAttributes())
+        return res.json(department.getAttributes())
 
     })
 
     router.delete('/:id([0-9]+)', async (req, res) => {
 
-        var building = new Building()
+        var department = new Department()
 
         try {
-            await building.fetch({id:req.params.id})
+            await department.fetch({id:req.params.id})
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
 
-        if (building.getAttributes().id === undefined) {
+        if (department.getAttributes().id === undefined) {
             return res.status(404).json({})
         }
 
         try {
-            await building.delete()
+            await department.delete()
         } catch (error) {
             console.log(error)
             res.status(500).send(error)

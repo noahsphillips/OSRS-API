@@ -25,8 +25,11 @@ module.exports = (router) => {
     router.post('/', async (req, res) => {
 
         var user = new User()
+        await user.fetch({username: req.body.username.trim().toLowerCase()})
 
-        User.fetch({username: req.user.username.trim().toLowerCase()})
+        if (user.getAttribute('username')) {
+            return res.status(400).json({message: "User exists already"})
+        }
 
         user = await user.create(req.body)
 
@@ -58,14 +61,14 @@ module.exports = (router) => {
         var user = new User()
 
         try {
-            await user.fetch(req.params.id)
+            await user.fetch({id:req.params.id})
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
 
-        if (user.getAttributes().id === undefined) {
-            return res.status(404).json({})
+        if (user.getAttributes()['id'] === null) {
+            return res.status(404).json({message: "User not found"})
         }
         try {
             await user.update(req.body)
@@ -88,7 +91,7 @@ module.exports = (router) => {
             res.status(500).send(error)
         }
 
-        if (user.getAttributes().id === undefined) {
+        if (user.getAttributes().id === null) {
             return res.status(404).json({})
         }
 
@@ -100,6 +103,19 @@ module.exports = (router) => {
         }
 
         return res.send('deleted')
+
+    })
+
+    router.post('/signin', async (req, res) => {
+        var user = new User()
+        
+        var data = await user.signIn(req.body.username.trim().toLowerCase(), req.body.password.trim())
+
+        if (!data) {
+            return res.status(401).json({message: "Wrong credentials"})
+        }
+
+        return res.json({data})
 
     })
 

@@ -2,7 +2,8 @@
 var UserDB = require('../models').user,
     SingleModel = require('./SingleModel'),
     bcrypt = require('bcrypt'),
-    _ = require('underscore')
+    _ = require('underscore'),
+    Session = require('./UserSession')
 
 module.exports = class Building extends SingleModel {
 
@@ -12,11 +13,20 @@ module.exports = class Building extends SingleModel {
 
     create(modelObject = {}) {
         return new Promise( async (res, rej) => {
-            if (!checkRequiredFields) {
+            if (!this.checkRequiredFields(modelObject)) {
                 return res(false)
             }
-            modelObject.password = await this.hashPassword(modelObject.password)
+
+            if (modelObject.password) {
+                try {
+                    modelObject.password = await this.hashPassword(modelObject.password)
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+
             var result = await super.createModel(this, UserDB, modelObject)
+
             return res(this.getAttributes(UserDB.getAttributes()))
         })
     }
@@ -31,14 +41,15 @@ module.exports = class Building extends SingleModel {
 
     hashPassword(password) {
         return new Promise( async (res, rej) => {
-            password = await bcrypt.hash(userBody.password, 12)
+            password = await bcrypt.hash(password, 12)
+            console.log(password)
             return res(password)
         })
     }
 
     fetch(filter) {
         return new Promise( async (res, rej) => {
-            if (id === null ) {
+            if (filter === null ) {
                 return res(false)
             }
             await super.getFromDB(this, UserDB, filter)
@@ -72,7 +83,44 @@ module.exports = class Building extends SingleModel {
 
     update(newValsObj = null) {
         return new Promise( async (res, rej) => {
+            if (newValsObj.password) {
+                try {
+                    newValsObj.password = await this.hashPassword(newValsObj.password)
+                } catch (error) {
+                    console.log(error)
+                }
+            }
             return res( await super.updateModel(this, UserDB, newValsObj))
+        })
+    }
+
+    signIn(username, password) {
+        return new Promise( async (res, rej) => {
+            await this.fetch({username: username.trim().toLowerCase()})
+            if (this._id == null) {
+                return res(false)
+            }
+            if (await this._comparePasswords(password)) {
+                return res(await this._makeSession())
+            } else {
+                return res(false)
+            }
+        })
+    }
+
+    _makeSession() {
+        return new Promise(async (res, rej) => {
+            var session = new Session()
+            var returnedSession = await session.create({isValid:true, user_id: this._id})
+            res({token: returnedSession.token, role:this._role})
+        })
+    }
+
+    _comparePasswords(password) {
+        return new Promise(async (res, rej) => {
+            console.log(password)
+            console.log(this._password)
+            return res(await bcrypt.compare(password, this._password))
         })
     }
     

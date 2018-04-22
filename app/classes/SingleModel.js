@@ -22,10 +22,16 @@ module.exports = class SingleModel {
     }
 
     _updateLocalVars(context, theModel, vals) {
-        vals = vals.toJSON()
-        theModel.getAttributes().forEach(attribute => {
-            context[`_${attribute}`] = vals[attribute]
-        })
+        if (vals === null) {
+            theModel.getAttributes().forEach(attribute => {
+                context[`_${attribute}`] = null
+            })
+        } else {
+            vals = vals.toJSON()
+            theModel.getAttributes().forEach(attribute => {
+                context[`_${attribute}`] = vals[attribute]
+            })
+        }
         return true
     }
 
@@ -50,7 +56,6 @@ module.exports = class SingleModel {
                 console.error(error)
                 return res(false)
             }
-            console.log(model)
             return res(this._updateLocalVars(context, theModel, model))
         })
     }

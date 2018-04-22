@@ -1,4 +1,4 @@
-let Building = require('../classes/Building'),
+let Hold = require('../classes/Hold'),
     Models = require('../classes/Models'),
     _ = require('underscore')
 
@@ -6,93 +6,93 @@ module.exports = (router) => {
 
     router.get('/', async (req, res) => {
 
-        var buildings = new Models('building')
+        var holds = new Models('hold')
         try {
-            buildings = await buildings.getAll()
+            holds = await holds.getAll()
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
 
-        if (!buildings) {
+        if (!holds) {
             return res.status(404).json({})
         }
 
-        return res.json(buildings)
+        return res.json(holds)
 
     })
 
     router.post('/', async (req, res) => {
 
-        var building = new Building()
+        var hold = new Hold()
 
-        building = await building.create(req.body)
+        hold = await hold.create(req.body)
 
-        return res.json(building)
+        return res.json(hold)
 
     })
 
     router.get('/:id([0-9]+)', async (req, res) => {
 
-        var buildings = new Models('building')
+        var holds = new Models('hold')
 
         try {
-            buildings = await buildings.getOne({id: req.params.id})
+            holds = await holds.getOne({id: req.params.id})
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
 
-        if (!buildings) {
+        if (!holds) {
             return res.status(404).json({})
         }
 
-        return res.json(buildings)
+        return res.json(holds)
 
     })
 
     router.patch('/:id([0-9]+)', async (req, res) => {
 
-        var building = new Building()
+        var hold = new Hold()
 
         try {
-            await building.fetch({id:req.params.id})
+            await hold.fetch({id:req.params.id})
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
 
-        if (building.getAttributes()['id'] === null) {
-            return res.status(404).json({message: "Building not found"})
+        if (hold.getAttributes()['id'] === null) {
+            return res.status(404).json({message: "Hold not found"})
         }
 
         try {
-            await building.update(req.body)
+            await hold.update(req.body)
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
-        return res.json(building.getAttributes())
+        return res.json(hold.getAttributes())
 
     })
 
     router.delete('/:id([0-9]+)', async (req, res) => {
 
-        var building = new Building()
+        var hold = new Hold()
 
         try {
-            await building.fetch({id:req.params.id})
+            await hold.fetch({id:req.params.id})
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
 
-        if (building.getAttributes().id === undefined) {
+        if (hold.getAttributes().id === undefined) {
             return res.status(404).json({})
         }
 
         try {
-            await building.delete()
+            await hold.delete()
         } catch (error) {
             console.log(error)
             res.status(500).send(error)

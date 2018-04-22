@@ -1,9 +1,9 @@
 'use strict'
-var BuildingDB = require('../models').building,
+var DepartmentDB = require('../models').department,
 SingleModel = require('./SingleModel'),
     _ = require('underscore')
 
-module.exports = class Building extends SingleModel {
+module.exports = class Department extends SingleModel {
 
     constructor(modelObject, id = null) {
         super()
@@ -11,8 +11,8 @@ module.exports = class Building extends SingleModel {
 
     create(modelObject = {}) {
         return new Promise( async (res, rej) => {
-            var result = await super.createModel(this, BuildingDB, modelObject)
-            return res(this.getAttributes(BuildingDB.getAttributes()))
+            var result = await super.createModel(this, DepartmentDB, modelObject)
+            return res(this.getAttributes(DepartmentDB.getAttributes()))
         })
     }
 
@@ -21,8 +21,8 @@ module.exports = class Building extends SingleModel {
             if (filter === null ) {
                 return res(false)
             }
-            await super.getFromDB(this, BuildingDB, filter)
-            return res(this.getAttributes(BuildingDB.getAttributes()))
+            await super.getFromDB(this, DepartmentDB, filter)
+            return res(this.getAttributes(DepartmentDB.getAttributes()))
         })
     }
 
@@ -33,7 +33,7 @@ module.exports = class Building extends SingleModel {
     getAttributes(arrayOfAtts = null) {
         var values = {}
         if (arrayOfAtts === null) {
-            arrayOfAtts = BuildingDB.getAttributes()
+            arrayOfAtts = DepartmentDB.getAttributes()
         }
         arrayOfAtts.forEach(attribute => {
             values[attribute] = this[`_${attribute}`]
@@ -46,13 +46,13 @@ module.exports = class Building extends SingleModel {
             if (this._id === null) {
                 return res(false)
             }
-            return res( await super.destroyModel(this, BuildingDB, this._id))
+            return res( await super.destroyModel(this, DepartmentDB, this._id))
         })
     }
 
     update(newValsObj = null) {
         return new Promise( async (res, rej) => {
-            return res( await super.updateModel(this, BuildingDB, newValsObj))
+            return res( await super.updateModel(this, DepartmentDB, newValsObj))
         })
     }
     

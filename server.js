@@ -27,26 +27,26 @@ app.use(bodyParser.json({
     type: 'application/*'
 }))
 
-// app.use(ejwt({
-//     secret: process.env.TOKEN_SECRET || 'devSecret'
-// }).unless({
-//     path: [{
-//         url: '/auth/signup',
-//         methods: ['POST']
-//     }, 
-//     {
-//         url: '/auth/login',
-//         methods: ['POST']
-//     }, 
-//     {
-//         url: '/auth/forgot_password',
-//         methods: ['POST']
-//     }, 
-//     {
-//         url: /auth\/reset_password\/.*$/,
-//         methods: ['POST']
-//     }]
-// }))
+app.use(ejwt({
+    secret: process.env.TOKEN_SECRET || 'devSecret'
+}).unless({
+    path: [{
+        url: '/users/post',
+        methods: ['POST']
+    }, 
+    {
+        url: '/users/signin',
+        methods: ['POST']
+    }, 
+    {
+        url: '/users/forgot_password',
+        methods: ['POST']
+    }, 
+    {
+        url: /users\/reset_password\/.*$/,
+        methods: ['POST']
+    }]
+}))
 
 fs.readdirSync('./app/routes').forEach((file) => {
     router.use(`/${path.parse(file).name}`, require(`./app/routes/${file}`)(
