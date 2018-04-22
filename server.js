@@ -11,7 +11,7 @@ const express = require('express'),
 
 app.use(cors({
     origin: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }))
@@ -31,7 +31,7 @@ app.use(ejwt({
     secret: process.env.TOKEN_SECRET || 'devSecret'
 }).unless({
     path: [{
-        url: '/users/post',
+        url: '/users',
         methods: ['POST']
     }, 
     {

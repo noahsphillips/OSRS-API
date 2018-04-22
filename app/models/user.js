@@ -8,7 +8,7 @@ let bookshelf = require('../lib/db'),
     sessions(){
       return this.hasMany('Session','user_id')
     },
-    course() {
+    courses() {
         return this.belongsToMany('Course', 'user_courses', 'user_id')
     },
     grades() {

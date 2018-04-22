@@ -55,5 +55,20 @@ module.exports = class Course extends SingleModel {
             return res( await super.updateModel(this, CourseDB, newValsObj))
         })
     }
+
+    attachUser(userModel) {
+        return new Promise( async (res, rej) => {
+            try {
+                await new Promise.all([
+                    this._rawModel.attach(userModel),
+                    userModel.attach(this._rawModel)
+                ])
+            } catch (error) {
+                console.log(error)
+            }
+
+            return res(true)
+        })
+    }
     
 }

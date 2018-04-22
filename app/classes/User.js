@@ -3,7 +3,8 @@ var UserDB = require('../models').user,
     SingleModel = require('./SingleModel'),
     bcrypt = require('bcrypt'),
     _ = require('underscore'),
-    Session = require('./UserSession')
+    Session = require('./UserSession'),
+    Course = require('./Course')
 
 module.exports = class Building extends SingleModel {
 
@@ -112,7 +113,7 @@ module.exports = class Building extends SingleModel {
         return new Promise(async (res, rej) => {
             var session = new Session()
             var returnedSession = await session.create({isValid:true, user_id: this._id})
-            res({token: returnedSession.token, role:this._role})
+            res({token: returnedSession.token, role:this._role, id:this._id})
         })
     }
 
@@ -121,6 +122,25 @@ module.exports = class Building extends SingleModel {
             console.log(password)
             console.log(this._password)
             return res(await bcrypt.compare(password, this._password))
+        })
+    }
+
+    getCourses() {
+        return new Promise( async (res, rej) => {
+            var courses = await UserDB.where({id:this._id}).fetch()
+            courses = await courses.courses()
+            return res(courses)
+        })
+    }
+
+    addCourse(courseID) {
+        return new Promise( async (res, rej) => {
+            var course = new Course()
+            await course.fetch({id:courseID})
+
+            await course.attachUser(this._rawModel)
+
+            return res(true)
         })
     }
     

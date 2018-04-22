@@ -119,5 +119,29 @@ module.exports = (router) => {
 
     })
 
+    router.get('/:id([0-9]+)/courses', async (req, res) => {
+
+        var user = new User()
+
+        await user.fetch({id:req.params.id})
+
+        var courses = user.getCourses()
+
+        return res.json(courses)
+
+    })
+
+    router.post('/:id([0-9]+)/courses/:courseID([0-9]+)', async (req, res) => {
+
+        var user = new User()
+
+        await user.fetch({id:req.params.id})
+
+        var courses = await user.addCourse({id:req.params.courseID})
+
+        return res.json({message: "added", courses})
+
+    })
+
     return router
 }

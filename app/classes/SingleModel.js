@@ -27,6 +27,7 @@ module.exports = class SingleModel {
                 context[`_${attribute}`] = null
             })
         } else {
+            context['_rawModel'] = vals
             vals = vals.toJSON()
             theModel.getAttributes().forEach(attribute => {
                 context[`_${attribute}`] = vals[attribute]
@@ -91,6 +92,8 @@ module.exports = class SingleModel {
             var modelVals = _.pick(vals, theModel.getAttributes())
 
             modelVals = this.trimmer(modelVals)
+
+            console.log(modelVals)
 
             modelVals = _.omit(modelVals, 'id')
             if (!modelVals) {
