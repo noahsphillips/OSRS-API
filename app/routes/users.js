@@ -8,7 +8,7 @@ module.exports = (router) => {
 
         var users = new Models('user')
         try {
-            users = await users.getAll()
+            users = await users.getAll(req.query)
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
@@ -85,13 +85,13 @@ module.exports = (router) => {
         var user = new User()
 
         try {
-            await user.fetch(req.params.id)
+            await user.fetch({id:req.params.id})
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
         }
 
-        if (user.getAttributes().id === null) {
+        if (user.getAttributes()['id'] === null) {
             return res.status(404).json({})
         }
 

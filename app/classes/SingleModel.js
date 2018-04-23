@@ -30,7 +30,9 @@ module.exports = class SingleModel {
             context['_rawModel'] = vals
             vals = vals.toJSON()
             theModel.getAttributes().forEach(attribute => {
-                context[`_${attribute}`] = vals[attribute]
+                if (vals[attribute]) {
+                    context[`_${attribute}`] = vals[attribute]
+                }
             })
         }
         return true

@@ -84,7 +84,7 @@ module.exports = class Building extends SingleModel {
 
     update(newValsObj = null) {
         return new Promise( async (res, rej) => {
-            if (newValsObj.password) {
+            if (newValsObj.password !== this._password && newValsObj.password !== null && newValsObj.password !== "") {
                 try {
                     newValsObj.password = await this.hashPassword(newValsObj.password)
                 } catch (error) {
