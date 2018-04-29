@@ -14,6 +14,8 @@ module.exports = class Models {
 
     getAll(filter = {}, includes = []) {
         return new Promise(async (res, rej) => {
+            console.log(filter)
+            console.log(includes)
             try {
                 var models = await this._dbModel.where(filter).fetchAll({
                     withRelated: includes

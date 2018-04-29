@@ -6,6 +6,8 @@ module.exports = (router) => {
 
     router.get('/', async (req, res) => {
 
+        console.log(req.query)
+
         var include = []
 
         if (req.query.include) {
@@ -14,8 +16,10 @@ module.exports = (router) => {
         }
 
         var courses = new Models('course')
+        console.log('made it past')
         try {
             courses = await courses.getAll(req.qeury, include)
+            console.log('so it is here')
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
