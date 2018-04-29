@@ -14,7 +14,7 @@ let bookshelf = require('../lib/db'),
         'id',
         'name',
         'user_id',
-        'name',
+        'name_short',
         'created_at',
         'updated_at'
       ];

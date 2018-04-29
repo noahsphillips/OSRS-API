@@ -12,10 +12,12 @@ module.exports = class Models {
         this._dbModel = models[dbModelName]
     }
 
-    getAll(filter = {}) {
+    getAll(filter = {}, includes = []) {
         return new Promise(async (res, rej) => {
             try {
-                var models = await this._dbModel.where(filter).fetchAll()
+                var models = await this._dbModel.where(filter).fetchAll({
+                    withRelated: includes
+                })
             } catch (error) {
                 console.error(error)
                 return false

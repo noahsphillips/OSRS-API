@@ -13,6 +13,9 @@ let bookshelf = require('../lib/db'),
     },
     department() {
         return this.belongsTo('Department', 'department_id')
+    },
+    professor() {
+      return this.belongsTo('User', 'professor_id')
     }
   }, {
     getAttributes: () => {
@@ -26,7 +29,8 @@ let bookshelf = require('../lib/db'),
         'professor',
         'classroom_id',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'professor_id'
       ];
     }
   });

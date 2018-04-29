@@ -7,8 +7,16 @@ module.exports = (router) => {
     router.get('/', async (req, res) => {
 
         var users = new Models('user')
+
+        var include = []
+
+        if (req.query.include) {
+            include = req.query.include
+            delete req.query.include
+        }
+
         try {
-            users = await users.getAll(req.query)
+            users = await users.getAll(req.query, include)
         } catch (error) {
             console.log(error)
             res.status(500).send(error)

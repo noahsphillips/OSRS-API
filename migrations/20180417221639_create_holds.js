@@ -5,7 +5,7 @@ exports.up = function (knex, Promise) {
             t.increments().primary()
             t.integer('user_id')
             t.string('semester')
-            t.boolean('isValid')
+            t.boolean('isValid').default(true)
             t.text('reason')
             t.timestamps()
         })
