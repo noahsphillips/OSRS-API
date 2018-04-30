@@ -41,10 +41,18 @@ module.exports = (router) => {
 
     router.get('/:id([0-9]+)', async (req, res) => {
 
+
+        var include = []
+
+        if (req.query.include) {
+            include = req.query.include
+            delete req.query.include
+        }
+
         var classrooms = new Models('classroom')
 
         try {
-            classrooms = await classrooms.getOne({id: req.params.id})
+            classrooms = await classrooms.getOne({id: req.params.id}, include)
         } catch (error) {
             console.log(error)
             res.status(500).send(error)

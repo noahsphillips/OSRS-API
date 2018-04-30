@@ -95,8 +95,6 @@ module.exports = class SingleModel {
 
             modelVals = this.trimmer(modelVals)
 
-            console.log(modelVals)
-
             modelVals = _.omit(modelVals, 'id')
             if (!modelVals) {
                 return res(false)

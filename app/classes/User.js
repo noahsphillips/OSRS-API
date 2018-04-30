@@ -113,7 +113,7 @@ module.exports = class Building extends SingleModel {
         return new Promise(async (res, rej) => {
             var session = new Session()
             var returnedSession = await session.create({isValid:true, user_id: this._id})
-            res({token: returnedSession.token, role:this._role, id:this._id})
+            res({token: returnedSession.token, role:this._role, id:this._id, first_name:this._first_name})
         })
     }
 
@@ -135,12 +135,24 @@ module.exports = class Building extends SingleModel {
 
     addCourse(courseID) {
         return new Promise( async (res, rej) => {
-            var course = new Course()
-            await course.fetch({id:courseID})
 
-            await course.attachUser(this._rawModel)
+            var user = await UserDB.where({id:this._id}).fetch()
+
+            await user.courses().attach(courseID.id)
 
             return res(true)
+        })
+    }
+
+    removeCourse(courseID) {
+        return new Promise( async (res, rej) => {
+
+            var user = await UserDB.where({id:this._id}).fetch()
+
+            await user.courses().detach(courseID.id)
+
+            return res(true)
+
         })
     }
     

@@ -18,7 +18,7 @@ module.exports = (router) => {
         var courses = new Models('course')
         console.log('made it past')
         try {
-            courses = await courses.getAll(req.qeury, include)
+            courses = await courses.getAll(req.query, include)
             console.log('so it is here')
         } catch (error) {
             console.log(error)
@@ -45,10 +45,17 @@ module.exports = (router) => {
 
     router.get('/:id([0-9]+)', async (req, res) => {
 
+        var include = []
+
+        if (req.query.include) {
+            include = req.query.include
+            delete req.query.include
+        }
+
         var courses = new Models('course')
 
         try {
-            courses = await courses.getOne({id: req.params.id})
+            courses = await courses.getOne({id: req.params.id}, include)
         } catch (error) {
             console.log(error)
             res.status(500).send(error)

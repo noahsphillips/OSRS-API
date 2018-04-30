@@ -13,6 +13,9 @@ let bookshelf = require('../lib/db'),
     },
     grades() {
         return this.hasMany('Grade', 'user_id')
+    },
+    professing() {
+      return this.hasMany('Course', 'professor_id')
     }
   }, {
     getAttributes: () => {

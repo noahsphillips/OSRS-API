@@ -14,8 +14,7 @@ module.exports = class Models {
 
     getAll(filter = {}, includes = []) {
         return new Promise(async (res, rej) => {
-            console.log(filter)
-            console.log(includes)
+
             try {
                 var models = await this._dbModel.where(filter).fetchAll({
                     withRelated: includes
@@ -28,10 +27,13 @@ module.exports = class Models {
         })
     }
 
-    getOne(filter = {}) {
+    getOne(filter = {}, include = []) {
         return new Promise(async (res, rej) => {
+            
             try {
-                var model = await this._dbModel.where(filter).fetch()
+                var model = await this._dbModel.where(filter).fetch({
+                    withRelated: include
+                })
             } catch (error) {
                 console.error(error)
                 return false

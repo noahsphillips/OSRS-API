@@ -49,8 +49,15 @@ module.exports = (router) => {
 
         var users = new Models('user')
 
+        var include = []
+
+        if (req.query.include) {
+            include = req.query.include
+            delete req.query.include
+        }
+
         try {
-            users = await users.getOne({id: req.params.id})
+            users = await users.getOne({id: req.params.id}, include)
         } catch (error) {
             console.log(error)
             res.status(500).send(error)
@@ -144,10 +151,20 @@ module.exports = (router) => {
         var user = new User()
 
         await user.fetch({id:req.params.id})
-
         var courses = await user.addCourse({id:req.params.courseID})
 
         return res.json({message: "added", courses})
+
+    })
+
+    router.delete('/:id([0-9]+)/courses/:courseID([0-9]+)', async (req, res) => {
+
+        var user = new User()
+
+        await user.fetch({id:req.params.id})
+        var courses = await user.removeCourse({id:req.params.courseID})
+
+        return res.json({message: "removed", courses})
 
     })
 
