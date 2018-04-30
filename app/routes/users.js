@@ -168,5 +168,9 @@ module.exports = (router) => {
 
     })
 
+    router.get('/start', (req, res) => {
+        res.send('ok')
+    })
+
     return router
 }
